@@ -9,11 +9,15 @@ Exemple of use :
 import Seleni
 
 MyKey = "GitHub"
+
 MySecretText = "Seleni is wonderfull !!!"
+
 
 MyEncryptedText = Seleni.crypt(MyKey, MySecretText)
 
+
 print(MyEncryptedText)
+
 
 MyDecryptedText = Seleni.decrypt(MyKey, MyEncryptedText)
 

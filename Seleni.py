@@ -1,4 +1,4 @@
-__version__ = "1.3.2.0"
+__version__ = "3.3.2.0"
 
 
 class HasNoTextError(Exception):
@@ -40,7 +40,7 @@ def Verify_HasNoKeyError(str_key):  # Vérifie si la clé est vide.
 
 
 # Vérifie si le texte donné pour le déchiffrement n'est pas chiffré.
-def Verify_HasGivenTextError(str_text, error_detail="This text is not encoded by Seleni"):
+def Verify_HasGivenTextError(str_text:str, error_detail="This text is not encoded by Seleni")->bool:
     list_text = list(str_text)
     for i in range(len(list_text)):
         traitement = list_text[i]
@@ -66,7 +66,7 @@ while not(len(list(str(modulo))) > prise_en_charge):
 modulo //= 2  # On divise par deux car le while s'arrête une fois trop tard.
 
 
-def inversion_modulaire(a, b):  # Inverse de b modulo a
+def inversion_modulaire(a:int, b:int)->int:  # Inverse de b modulo a
     r, u, o, s, w, x = a, 1, 0, b, 0, 1
     while s != 0:
         q = r // s
@@ -81,7 +81,7 @@ def inversion_modulaire(a, b):  # Inverse de b modulo a
         return y
 
 
-def crypt(key, text):
+def crypt(key:str, text:str)->str:
     Verify_HasNoTextError(text)
     Verify_HasNoKeyError(key)
 
@@ -137,21 +137,30 @@ def crypt(key, text):
             # Cela veut donc dire que le nombre est pair.
             if int(key[position_in_block]) % 2 == 0:
                 # On ajoute 1 au caractère traité de la clé pour qu'il devienne impair.
-                key[position_in_block] = str(int(key[position_in_block]) + 1)
+                key[position_in_block] = int(key[position_in_block]) + 1
             # Chiffrement modulo 1
             text[caract] = int(text[caract]) * int(key[position_in_block])
             # Chiffrement modulo 2 (% signifie modulo)
             text[caract] = text[caract] % modulo
             # Décalage de fréquence : ajoute i (place dans le bloc) au caractère
-            text[caract] = str(int(text[caract]) + position_in_block)
+            text[caract] = int(text[caract]) + position_in_block
             # // Fin du coeur du chiffrement
         # Todo
+    
+    sorted_text = sorted(text) #On trie les différentes valeurs
+    reduction = int(sorted_text[0]) # La clé de réduction
+
+    number = 0
+    for element in text : 
+        text[number] = str(int(text[number]) - reduction)
+        number += 1
 
     str_crypted_text = ".".join(text)
+    str_crypted_text = f"{reduction}..." + str_crypted_text
     return str_crypted_text  # Retourne le texte crypté.
 
 
-def decrypt(key, text):
+def decrypt(key:str, text:str)->str:
     text = text.strip()
 
     Verify_HasNoTextError(text)
@@ -160,7 +169,16 @@ def decrypt(key, text):
 
     len_key = len(key)
 
-    text = text.split(".")  # Convertit en une liste et retire les points.
+    splited = text.split("...") # Récupère la clé de réduction
+
+    reduction = int(splited[0])
+
+    text = splited[1].split(".")  # Convertit en une liste et retire les points.
+
+    number = 0
+    for element in text : 
+        text[number] = str(int(text[number]) + reduction)
+        number += 1
 
     # Convertir la clé texte en chiffres (si elle ne l'est pas encore).
     try:
