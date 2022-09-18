@@ -86,6 +86,7 @@ def crypt(key:str, text:str)->str:
     Verify_HasNoKeyError(key)
 
     len_key = len(key)
+    key = str(key)
 
     # Convertir le texte clair en chiffres
     text = list(text)
@@ -116,6 +117,9 @@ def crypt(key:str, text:str)->str:
 
         for caract in range(len_key):
             key[caract] = str(ord(key[caract]))
+
+    
+    print(f"key = {key}")
 
     # (↓) Définir les blocs (chiffrement par blocs)
 
@@ -162,6 +166,7 @@ def crypt(key:str, text:str)->str:
 
 def decrypt(key:str, text:str)->str:
     text = text.strip()
+    key = str(key)
 
     Verify_HasNoTextError(text)
     Verify_HasNoKeyError(key)
